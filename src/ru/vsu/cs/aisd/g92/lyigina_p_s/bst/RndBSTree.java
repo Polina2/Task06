@@ -103,25 +103,58 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
                 node = put(node.left, value);
             else
                 node = put(node.right, value);
+            size++;
         }
-        size++;
         return node;
     }
 
     private SimpleTreeNode putAtRoot(SimpleTreeNode node, T value) {
-        return null;
+        Pair<T> pair = split(node, value);
+        node.value = value;
+        node.left = pair.getLeft();
+        node.right = pair.getRight();
+        return node;
+    }
+
+    private Pair<T> split(SimpleTreeNode node, T value) {
+        if (size == 0 || node == null)
+            return new Pair<>(null, null);
+        else {
+            if (value.compareTo(node.value) < 0) {
+                Pair<T> p = split(node.left, value);
+                node.left = p.getRight();
+                //size
+                return new Pair<>(p.getLeft(), node);
+            } else {
+                Pair<T> p = split(node.right, value);
+                node.right = p.getLeft();
+                //size
+                return new Pair<>(node, p.getRight());
+            }
+        }
     }
 
     /**
      * Рекурсивное удаления значения из поддерева node
      *
      * @param node
-     * @param nodeParent Родитель узла
      * @param value
      * @return Старое значение, равное value, если есть
      */
-    private T remove(SimpleTreeNode node, SimpleTreeNode nodeParent, T value)
+    private SimpleTreeNode remove(SimpleTreeNode node, T value)
     {
+        if (size == 0)
+            return null;//........
+        if (value.compareTo(node.value) < 0)
+            node.left = remove(node.left, value);
+        else if (value.compareTo(node.value) > 0)
+            node.right = remove(node.right, value);
+        else
+            node = merge(node.left, node.right);
+        return node;
+    }
+
+    private SimpleTreeNode merge(SimpleTreeNode l, SimpleTreeNode r) {
         return null;
     }
 
@@ -144,7 +177,8 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
 
     @Override
     public T put(T value) {
-        return null;
+        SimpleTreeNode t = put(root, value);
+        return t.value;
     }
 
     @Override
