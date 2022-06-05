@@ -8,6 +8,7 @@ import ru.vsu.cs.aisd.g92.lyigina_p_s.SimpleBinaryTree;
 import ru.vsu.cs.aisd.g92.lyigina_p_s.BinaryTreePainter;
 import ru.vsu.cs.aisd.g92.lyigina_p_s.BinaryTree;
 import ru.vsu.cs.aisd.g92.lyigina_p_s.bst.BSTree;
+import ru.vsu.cs.aisd.g92.lyigina_p_s.bst.RndBSTree;
 import ru.vsu.cs.aisd.g92.lyigina_p_s.bst.SimpleBSTree;
 import ru.vsu.cs.aisd.g92.lyigina_p_s.bst.SimpleBSTreeMap;
 import ru.vsu.cs.aisd.g92.lyigina_p_s.bst.avl.AVLTree;
@@ -56,6 +57,7 @@ public class TreeDemoFrame extends JFrame {
     private JSpinner spinnerSingleValue;
     private JButton buttonSolution;
     private JTextField textFieldResult;
+    private JButton buttonMakeRndTree;
 
     private JMenuBar menuBarMain;
     private JPanel paintPanel = null;
@@ -290,6 +292,16 @@ public class TreeDemoFrame extends JFrame {
                     repaintTree();
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                }
+            }
+        });
+        buttonMakeRndTree.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    makeBSTFromValues(new RndBSTree<>(Integer::parseInt));
+                } catch (Exception ex) {
+                    SwingUtils.showErrorMessageBox(ex);
                 }
             }
         });

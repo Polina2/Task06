@@ -21,7 +21,7 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
         }
     }
 
-    int size = 0;
+    int size = 0;//...
 
     public RndBSTree(Function<String, T> fromStrFunc, Function<T, String> toStrFunc) {
         super(fromStrFunc, toStrFunc);
@@ -65,7 +65,7 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
      * @return treu/false
      */
     public static <T extends Comparable<? super T>> boolean isBST(BinaryTree.TreeNode<T> node) {
-        return node == null ? true : isBSTInner(node).result;
+        return node == null || isBSTInner(node).result;
     }
 
     /**
@@ -94,41 +94,53 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
      * @return Старое значение, равное value, если есть
      */
     private SimpleTreeNode put(SimpleTreeNode node, T value) {
+        int size = (node != null)? node.size : 0;
         Random rand = new Random();
         int r = rand.nextInt(size+1);
-        if (r == size)
-            node = putAtRoot(node, value);
-        else {
-            if (value.compareTo(node.value) < 0)
-                node = put(node.left, value);
+        if (r == size) {
+            if (node == root)
+                root = node = putAtRoot(node, value);
             else
-                node = put(node.right, value);
-            size++;
+                node = putAtRoot(node, value);
+        }
+        else {
+            if (value.compareTo(node.value) < 0) {
+                node.left = put(node.left, value);
+            }
+            else {
+                node.right = put(node.right, value);
+            }
+            node.size++;
         }
         return node;
     }
 
     private SimpleTreeNode putAtRoot(SimpleTreeNode node, T value) {
         Pair<T> pair = split(node, value);
-        node.value = value;
-        node.left = pair.getLeft();
-        node.right = pair.getRight();
-        return node;
+        return new SimpleTreeNode(value, pair.getLeft(), pair.getRight());
     }
 
     private Pair<T> split(SimpleTreeNode node, T value) {
-        if (size == 0 || node == null)
+        if (node == null)
             return new Pair<>(null, null);
         else {
             if (value.compareTo(node.value) < 0) {
                 Pair<T> p = split(node.left, value);
                 node.left = p.getRight();
-                //size
+                node.size = 1;
+                if (node.left != null)
+                    node.size += node.left.size;
+                if (node.right != null)
+                    node.size += node.right.size;
                 return new Pair<>(p.getLeft(), node);
             } else {
                 Pair<T> p = split(node.right, value);
                 node.right = p.getLeft();
-                //size
+                node.size = 1;
+                if (node.left != null)
+                    node.size += node.left.size;
+                if (node.right != null)
+                    node.size += node.right.size;
                 return new Pair<>(node, p.getRight());
             }
         }
@@ -137,8 +149,8 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
     /**
      * Рекурсивное удаления значения из поддерева node
      *
-     * @param node
-     * @param value
+     * @param node Узел (поддерево), из которого удаляем значение
+     * @param value Удаляемое значение
      * @return Старое значение, равное value, если есть
      */
     private SimpleTreeNode remove(SimpleTreeNode node, T value)
@@ -177,8 +189,12 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
 
     @Override
     public T put(T value) {
-        SimpleTreeNode t = put(root, value);
-        return t.value;
+        if (root == null) {
+            root = new SimpleTreeNode(value);
+            size++;
+            return null;
+        }
+        return put(root, value).value;
     }
 
     @Override

@@ -15,11 +15,17 @@ public class SimpleBinaryTree<T extends Comparable<? super T>> implements Binary
         public SimpleTreeNode left;
         public SimpleTreeNode right;
         public Color color = Color.BLACK;
+        public int size;
 
         public SimpleTreeNode(T value, SimpleTreeNode left, SimpleTreeNode right) {
             this.value = value;
             this.left = left;
             this.right = right;
+            size = 1;
+            if (left != null)
+                size += left.size;
+            if (right != null)
+                size += right.size;
         }
 
         public SimpleTreeNode(T value) {
@@ -55,6 +61,10 @@ public class SimpleBinaryTree<T extends Comparable<? super T>> implements Binary
         public void setColor(Color color) {
             this.color = color;
         }
+       /*
+        public int getSize() {
+            return size;
+        }*/
     }
 
     protected SimpleTreeNode root = null;
@@ -180,18 +190,7 @@ public class SimpleBinaryTree<T extends Comparable<? super T>> implements Binary
         }
         return true;
     }
-/*
-    private boolean isBSTreeRecursion1(TreeNode<T> node) {
-        if ((node.getLeft() == null || (node.getLeft().getLeft() == null && node.getLeft().getRight() == null)) &&
-                (node.getRight() == null || (node.getRight().getLeft() == null && node.getRight().getRight() == null)))
-            return (node.getLeft() == null || node.getLeft().getValue().compareTo(node.getValue()) < 0) &&
-                    (node.getRight() == null || node.getRight().getValue().compareTo(node.getValue()) > 0);
 
-        return isBSTreeRecursion1(node.getLeft()) && isBSTreeRecursion1(node.getRight()) &&
-                node.getLeft().getValue().compareTo(node.getValue()) < 0 &&
-                node.getRight().getValue().compareTo(node.getValue()) > 0;
-    }
-*/
     private boolean isBSTreeRecursion(TreeNode<T> node, T lowerBound, T higherBound) {
         if (node == null)
             return true;
