@@ -155,36 +155,45 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
      */
     private SimpleTreeNode remove(SimpleTreeNode node, T value)
     {
-        if (size == 0)
-            return null;//........
+        if (node == null)
+            return null;
         if (value.compareTo(node.value) < 0)
             node.left = remove(node.left, value);
         else if (value.compareTo(node.value) > 0)
             node.right = remove(node.right, value);
-        else
-            node = merge(node.left, node.right);
+        else {
+            if (node == root)
+                root = node = merge(node.left, node.right);
+            else
+                node = merge(node.left, node.right);
+        }
         return node;
     }
 
-    private SimpleTreeNode merge(SimpleTreeNode l, SimpleTreeNode r) {
-        return null;
-    }
-
-    /**
-     * Поиск родителя минимально TreeNode в поддереве node
-     *
-     * @param node Поддерево в котором надо искать родителя минимального элемент
-     * @return Узел, содержащий минимальный элемент
-     */
-    private SimpleTreeNode getMinNodeParent(SimpleTreeNode node) {
-        if (node == null) {
+    private SimpleTreeNode merge(SimpleTreeNode left, SimpleTreeNode right) {
+        if (left == null && right == null)
             return null;
+        int lSize = (left != null)? left.size : 0;
+        int rSize = (right != null)? right.size : 0;
+        int r = new Random().nextInt(lSize + rSize) + 1;
+        if (r <= lSize) {
+            left.right = merge(left.right, right);
+            left.size = 1;
+            if (left.left != null)
+                left.size += left.left.size;
+            if (left.right != null)
+                left.size += left.right.size;
+            return left;
+        } else {
+            assert right != null;
+            right.left = merge(left, right.left);
+            right.size = 1;
+            if (right.left != null)
+                right.size += right.left.size;
+            if (right.right != null)
+                right.size += right.right.size;
+            return right;
         }
-        SimpleTreeNode parent = null;
-        for (; node.left != null; node = node.left) {
-            parent = node;
-        }
-        return parent;
     }
 
     @Override
@@ -199,7 +208,7 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
 
     @Override
     public T remove(T value) {
-        return null;
+        return remove(root, value).value;
     }
 
     @Override
