@@ -58,6 +58,7 @@ public class TreeDemoFrame extends JFrame {
     private JButton buttonSolution;
     private JTextField textFieldResult;
     private JButton buttonMakeRndTree;
+    private JButton buttonCheck;
 
     private JMenuBar menuBarMain;
     private JPanel paintPanel = null;
@@ -303,6 +304,12 @@ public class TreeDemoFrame extends JFrame {
                 } catch (Exception ex) {
                     SwingUtils.showErrorMessageBox(ex);
                 }
+            }
+        });
+        buttonCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textAreaSystemOut.setText(MapTest.test());
             }
         });
     }

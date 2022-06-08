@@ -208,7 +208,10 @@ public class RndBSTree<T extends Comparable<? super T>> extends SimpleBinaryTree
 
     @Override
     public T remove(T value) {
-        return remove(root, value).value;
+        SimpleTreeNode n = remove(root, value);
+        if (n == null)
+            return null;
+        return n.value;
     }
 
     @Override

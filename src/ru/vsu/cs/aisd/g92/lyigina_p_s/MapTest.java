@@ -1,5 +1,7 @@
 package ru.vsu.cs.aisd.g92.lyigina_p_s;
 
+import ru.vsu.cs.aisd.g92.lyigina_p_s.bst.RndBSTreeMap;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Map;
@@ -79,5 +81,42 @@ public class MapTest {
 
     public static void testCorrect(Map<Integer, Integer> testMap) {
         testCorrect(testMap, true);
+    }
+
+    public static String test() {
+        String res = "put:\n";
+        Map<Integer, Integer> std = new TreeMap<>();
+        Map<Integer, Integer> rnd = new RndBSTreeMap<>();
+        long start = System.nanoTime();
+        for (int i = 0; i < 2000; i++) {
+            std.put(i, i+1);
+        }
+        res += "std:" + (System.nanoTime()-start)/1000 + "mcrsec\n";
+        start = System.nanoTime();
+        for (int i = 0; i < 2000; i++) {
+            rnd.put(i, i+1);
+        }
+        res += "rnd:" + (System.nanoTime()-start)/1000 + "mcrsec\n";
+
+        res += "remove:\n";
+        start = System.nanoTime();
+        for (int i = 0; i < 1000; i++) {
+            std.remove(i);
+        }
+        res += "std:" + (System.nanoTime()-start)/1000 + "mcrsec\n";
+        start = System.nanoTime();
+        for (int i = 0; i < 1000; i++) {
+            rnd.remove(i);
+        }
+        res += "rnd:" + (System.nanoTime()-start)/1000 + "mcrsec\n";
+
+        res += "get value:\n";
+        start = System.nanoTime();
+        int v = std.get(1001);
+        res += "std:" + (System.nanoTime()-start) + "nsec\n";
+        start = System.nanoTime();
+        v = rnd.get(1001);
+        res += "rnd:" + (System.nanoTime()-start) + "nsec\n";
+        return res;
     }
 }
